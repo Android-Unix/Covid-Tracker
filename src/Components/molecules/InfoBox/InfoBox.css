@@ -1,0 +1,58 @@
+.app__infobox{
+    width: 100%;
+    border-radius: 10px !important;
+    cursor: pointer;
+    text-align: center;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.app__recovered{
+    border-bottom-width: 1.2vh;
+    border-bottom-style: solid;
+    border-color: darkgreen;
+}
+.app__deaths{
+    border-bottom-width: 1.2vh;
+    border-bottom-style: solid;
+    border-color: red;
+}
+.app__cases{
+    border-bottom-width: 1.2vh;
+    border-bottom-style: solid;
+    border-color: darkorange;
+}
+.app__infobox-recovered :hover{
+    color: rgb(15, 189, 15);
+}
+.app__infobox-deaths :hover{
+    color: red;
+}
+.app__infobox-cases :hover{
+    color: rgb(255, 140, 0);
+}
+.app__infobox-title{
+    font-size: 3vh !important;
+    font-weight: bold !important;
+}
+.app__infobox-cases{
+    font-size: 5.7vh !important;
+    font-weight: bolder !important;
+}
+.app__infobox-total{
+    font-size: 2.6vh !important;
+    font-weight: bold !important;
+}
+@media(max-width: 440px){
+    .app__infobox-title{
+        font-size: 5vh !important;
+        font-weight: bold !important;
+    }
+    .app__infobox-cases{
+        font-size: 10vh !important;
+        font-weight: bolder !important;
+    }
+    .app__infobox-total{
+        font-size: 5vh !important;
+        font-weight: bold !important;
+    }
+}

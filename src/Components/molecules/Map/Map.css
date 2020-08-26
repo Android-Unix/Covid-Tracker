@@ -1,0 +1,17 @@
+.app__map{
+    height: 52vh;
+    background-color: white;
+    padding: 1em;
+    border-radius: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.5);
+}
+
+.app__map .leaflet-container {
+    height: 100%;
+}
+@media (min-width: 1600px){
+    .app__map{
+        height: 60vh;
+    }
+}
