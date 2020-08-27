@@ -62,10 +62,6 @@ function App() {
     setClickedInfoBox(clicked);
   }
 
-  let style = {
-    borderColor: 'black'
-  }
-
   return (
     <div className={'app'}>
       <div className={'app__left-container'}>
@@ -79,7 +75,8 @@ function App() {
               title={'Covid Cases'}
               cases={countryInfo.todayCases} 
               total={`${countryInfo.cases} Total`}
-              fontStyle={ clickedInfoBox === 'Cases' ? {color: 'darkorange'} : {color: 'black'} }
+              infoBoxStyle={ clickedInfoBox === 'Cases' ? 'app__infobox app__cases app__infobox-cases' : 'app__infobox app__cases-border' }
+              fontColor={ clickedInfoBox === 'Cases' ? {color: 'darkorange'} : {color: 'black'} }
             />
           </div>
           <div className={'app__card'} onClick={ () => clickHandler('Recovered') }>
@@ -87,7 +84,8 @@ function App() {
               title={'Recovered'}
               cases={countryInfo.todayRecovered}
               total={`${countryInfo.recovered} Total`}
-              fontStyle={ clickedInfoBox === 'Recovered' ? {color: 'rgb(0, 212, 0)'} : {color: 'black'} }
+              infoBoxStyle={ clickedInfoBox === 'Recovered' ? 'app__infobox app__recovered app__infobox-recovered' : 'app__infobox app__recovered-border app__infobox-hover-recovered ' }
+              fontColor={ clickedInfoBox === 'Recovered' ? {color: 'rgb(0, 212, 0)'} : {color: 'black'} }
             />
           </div>
           <div className={'app__card'} onClick={ () => clickHandler('Deaths') }>
@@ -95,7 +93,8 @@ function App() {
               title={'Deaths'} 
               cases={countryInfo.todayDeaths} 
               total={`${countryInfo.deaths} Total`}
-              fontStyle={ clickedInfoBox === 'Deaths' ? {color: 'red'} : {color: 'black'} }
+              infoBoxStyle={ clickedInfoBox === 'Deaths' ? 'app__infobox app__deaths app__infobox-deaths' : 'app__infobox app__deaths-border' }
+              fontColor={ clickedInfoBox === 'Deaths' ? {color: 'red'} : {color: 'black'} }
             />
           </div>
         </div>

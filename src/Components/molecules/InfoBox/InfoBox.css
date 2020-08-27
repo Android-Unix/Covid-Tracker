@@ -1,25 +1,89 @@
 .app__infobox{
-    width: 100%;
+    position: relative !important;
+    width: 80%;
+    background-color: white;
     border-radius: 10px !important;
     cursor: pointer;
     text-align: center;
-    margin-right: 5px;
-    margin-left: 5px;
+    padding: 20px;
+}
+.app__recovered-border{
+    border-bottom-width: 1.2vh;
+    border-bottom-style: solid;
+    border-color: darkgreen;
 }
 .app__recovered{
     border-bottom-width: 1.2vh;
     border-bottom-style: solid;
     border-color: darkgreen;
 }
+.app__recovered :after{
+    position: absolute;
+    content: " ";
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    transform: rotate(45deg);
+    border-bottom-width: 0.8vh;
+    border-bottom-style: solid;
+    border-right-width: 0.8vh;
+    border-right-style: solid;
+    border-color: darkgreen;
+    top: 100%;
+    left: 40px;
+    margin-top: -15px;
+}
+.app__deaths-border{
+    border-bottom-width: 1.2vh;
+    border-bottom-style: solid;
+    border-color: red;
+}
 .app__deaths{
     border-bottom-width: 1.2vh;
     border-bottom-style: solid;
     border-color: red;
 }
+.app__deaths :after{
+    position: absolute;
+    content: " ";
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    transform: rotate(45deg);
+    border-bottom-width: 0.8vh;
+    border-bottom-style: solid;
+    border-right-width: 0.8vh;
+    border-right-style: solid;
+    border-color: red;
+    top: 100%;
+    left: 40px;
+    margin-top: -15px;
+}
 .app__cases{
     border-bottom-width: 1.2vh;
     border-bottom-style: solid;
     border-color: darkorange;
+}
+.app__cases-border{
+    border-bottom-width: 1.2vh;
+    border-bottom-style: solid;
+    border-color: darkorange;
+}
+.app__cases :after{
+    position: absolute;
+    content: " ";
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    transform: rotate(45deg);
+    border-bottom-width: 0.8vh;
+    border-bottom-style: solid;
+    border-right-width: 0.8vh;
+    border-right-style: solid;
+    border-color: darkorange;
+    top: 100%;
+    left: 40px;
+    margin-top: -15px;
 }
 .app__infobox-recovered :hover{
     color: rgb(15, 189, 15);
@@ -31,28 +95,33 @@
     color: rgb(255, 140, 0);
 }
 .app__infobox-title{
-    font-size: 3vh !important;
-    font-weight: bold !important;
+    font-size: 3vh;
+    font-weight: bold;
 }
 .app__infobox-cases{
-    font-size: 5.7vh !important;
-    font-weight: bolder !important;
+    font-size: 5.7vh;
+    font-weight: bold;
 }
 .app__infobox-total{
-    font-size: 2.6vh !important;
-    font-weight: bold !important;
+    font-size: 2.6vh;
+    font-weight: bold;
 }
 @media(max-width: 440px){
     .app__infobox-title{
-        font-size: 5vh !important;
-        font-weight: bold !important;
+        font-size: 5vh;
+        font-weight: bold;
     }
     .app__infobox-cases{
-        font-size: 10vh !important;
-        font-weight: bolder !important;
+        font-size: 10vh;
+        font-weight: bold;
     }
     .app__infobox-total{
-        font-size: 5vh !important;
-        font-weight: bold !important;
+        font-size: 5vh;
+        font-weight: bold;
+    }
+    .app__infobox{
+        width: 90%;
+        margin-left: 5px;
+        margin-bottom: 10px;
     }
 }
