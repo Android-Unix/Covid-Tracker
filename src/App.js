@@ -109,7 +109,7 @@ function App() {
 
       <Card className={'app__right-container'}>
         <CardContent>
-          <Table countriesCases={ sortData(countriesCases) }></Table>
+          <Table countriesData={ sortData(countriesCases) } clickedInfoBox={clickedInfoBox}></Table>
           <Graph infoBoxClicked={ clickedInfoBox } countryName={ countryInfo.name === undefined ? "Worldwide" : countryInfo.name }></Graph>
         </CardContent>
       </Card>
