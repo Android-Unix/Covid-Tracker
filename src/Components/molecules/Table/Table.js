@@ -1,18 +1,20 @@
 import React from 'react';
 import './Table.css';
 
-const Table = ({ countriesCases }) => {
+const Table = ({ countriesData, clickedInfoBox }) => {
+    const title = clickedInfoBox;
+    clickedInfoBox = clickedInfoBox.toLowerCase();
     return (
         <div className={'app__table'}>
             <tr className={'app__table-header'}>
                 <th>Country</th>
-                <th>Cases</th>
+                <th>{title}</th>
             </tr>
             
-            { countriesCases.map((countryCaseObject) => (
+            { countriesData.map((countryCaseObject) => (
                 <tr>
                     <td>{ countryCaseObject.name }</td>
-                    <td>{ countryCaseObject.cases }</td>
+                    <td>{ countryCaseObject[clickedInfoBox] }</td>
                 </tr>
             ))}
         </div>
