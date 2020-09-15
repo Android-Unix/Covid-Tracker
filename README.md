@@ -67,8 +67,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 
-
-### Sitesync Plugin documentation
+ ### Sitesync Plugin documentation
 
 In case the site sync plugin is updated, refer this documentaion to enable multi lang sync 
 support, sync media for custom posts and pages, attachment in acf, syncing newsroom posts.
@@ -77,13 +76,14 @@ In order to make sync for these possible, 2 files needs to be changed:
 - ApiController.php
 - Model.php
 
-*Changes that needs to be done in Model.php*
-- Find ``` build_sync_data ``` function. 
-    #### This function is responsible for preparing data that needs to be sent to remote/target system
+*Note:- The Model's ``` build_sync_data ``` function is responsible for constructing the necessary data and apicontroller's ``` push ``` function is executed on target system.*
 
-    **First step that needs to be done is enabling the multi language sync**
-    #### STEPS
-    - Add these lines of code after query object is created.
+    - #### To Enable MultiLanguage Sync Support in SiteSync plugin
+
+    Find ``` build_sync_data ``` function. 
+    *This function is responsible for preparing data that needs to be sent to remote/target system*
+    
+    Add these lines of code after query object is created.
     At the time of this documentation **(plugin version 1.6.1)** ,these set of lines:
     ```
     $query = new WP_Query($args);
@@ -97,7 +97,7 @@ In order to make sync for these possible, 2 files needs to be changed:
     if (function_exists('get_attached_media'))
         $push_data['post_media'] = get_attached_media('', $post_id);
     ```
-    **Code that needs to be added:**
+    **Code that needs to be added ( inside build_sync_data ):**
     ```
     global $wpdb;
     $sql = "SELECT * from wp_posts where id = $post_id";
@@ -109,6 +109,40 @@ In order to make sync for these possible, 2 files needs to be changed:
     $push_data['post_data']['post_content'] = $post_data[0]->post_content;
     ```
 
-    **These above set of lines are responsible for multi-lang sync**
-    
-      
+    These above set of lines are responsible for multi-lang sync
+
+    - #### To Enable custom posts media transfer and mapping of IDs
+    **Steps**
+    - **1** Since ID's are used in custom posts and the ID's are assigned to ``` image_link ``` We need to extract the id and send only the ids to the target system.
+
+    We use regex to extract / parse the shortcode and get the ID that's assigned to **image_link**.
+
+    Add these set of lines of code after the multi-lang code you add inside **build_sync_data**
+
+    ```
+    // get all image ids from content
+    $image_id_urls = array();
+    $image_field_types_pattern = array(
+        'component_image'              => '/image_link="(.*?)"/',
+        'single_image'                 => '/image="(.*?)"/',
+        'component_image_group'        => '/image_link%22%3A%22(.*?)%22/',
+        'component_mobile_image_group' => '/mobile_image%22%3A%22(.*?)%22/',
+    );
+
+    foreach ($image_field_types_pattern as $image_type=>$regex) :
+        preg_match_all($regex, $post_data[0]->post_content, $ids);
+        $image_id_urls = $this->image_handler(
+                $image_type,
+                $ids[1],
+                $image_id_urls
+        );
+    endforeach;
+
+    $push_data['post_data']['image_id_urls'] = $image_id_urls;
+    ```
+
+    Here we are assigning the ID's to key ``` image_id_urls ``` that will be later used by the target system to map the ID's
+
+    - **2** Using the sent ID's and constructing the mapping.
+
+    #### In order to do this.       
