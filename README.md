@@ -66,3 +66,22 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+### Sitesync Plugin documentation
+
+    In case the site sync plugin is updated, refer this documentaion to enable multi lang sync 
+    support, sync media for custom posts and pages, attachment in acf, syncing newsroom posts.
+
+    In order to make sync for these possible, 2 files needs to be changed:
+    - ApiController.php
+    - Model.php
+
+    *Changes that needs to be done in Model.php*
+    - Find **build_sync_data** function. 
+      #### This function is responsible for preparing data that needs to be sent to remote/
+      #### target system.
+
+      **First step that needs to be done is enabling the multi language sync**
+      - In order to do this follow these steps:
+      

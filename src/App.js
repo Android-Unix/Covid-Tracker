@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import CountryDropdown from './Components/molecules/CountryDropdown/CountryDropdown.js';
-import InfoBox from './Components/molecules/InfoBox/InfoBox.js';
-import Table from './Components/molecules/Table/Table.js';
-import Map from './Components/molecules/Map/Map.js';
-import Graph from './Components/molecules/Graph/Graph.js';
+import CountryDropdown from './Components/molecules/CountryDropdown/';
+import InfoBox from './Components/molecules/InfoBox/';
+import Table from './Components/molecules/Table/';
+import Map from './Components/molecules/Map/';
+import Graph from './Components/molecules/Graph/';
 
 import './App.css';
 import 'leaflet/dist/leaflet.css';
@@ -44,17 +44,16 @@ function App() {
   }
 
   const recievedAllCountriesData = (response) => {
-
     const countryCasesObject = response.map((countryData) => ({
-      name: countryData.country,
-      cases: countryData.cases,
-      recovered: countryData.recovered,
-      deaths: countryData.deaths,
-      lat: countryData.countryInfo.lat,
-      lng: countryData.countryInfo.long,
-      iso: countryData.countryInfo.iso2
+        name: countryData.country,
+        cases: countryData.cases,
+        recovered: countryData.recovered,
+        deaths: countryData.deaths,
+        lat: countryData.countryInfo.lat,
+        lng: countryData.countryInfo.long,
+        iso: countryData.countryInfo.iso2
     }));
-    
+
     setCountriesCases(countryCasesObject);
   }
 
