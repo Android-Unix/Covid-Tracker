@@ -143,6 +143,72 @@ $push_data['post_data']['image_id_urls'] = $image_id_urls;
 
 Here we are assigning the ID's to key ``` image_id_urls ``` that will be later used by the target system to map the ID's
 
-- **2** Using the sent ID's and constructing the mapping.
+- **2** Using the sent ID's, use meta table and map the new ID with the sent ID.
 
-#### In order to do this.       
+      These changes are done in **ApiController.php**.
+
+      Add this line of code 
+      ```
+        // Function call to sync GALE WPBakery component images links id
+		$post_data['post_content'] = $this->sync_custom_module_images($post_data);
+      ```
+      after the post_data is obtained in **push** function of ApiController.
+      ```
+        $post_data = $this->post_raw('post_data', array());
+      ```
+      At the time of documentation, after this line:
+      ```
+		$post_data['post_content'] = str_replace('~syncescuni~', '\\u', $post_data['post_content']); 
+      ```
+
+      Add the **sync_custom_module_images** function at the end of the file inside the class scope.
+      ```
+    // Function to sync CPPIB WPBakery custom module images
+	function sync_custom_module_images($post_data) {
+
+		$image_id_urls = $post_data['image_id_urls'];
+		$host_name = $post_data['host'];
+
+		// download image from urls
+		$image_ids = array();
+		foreach ($image_id_urls as $id => $value) {
+			if ($this->startsWith($value[0], '/wp-content/uploads/')) {
+				$media['guid']      = $host_name . $value[0];
+				$media['post_name'] = $value[1];
+				$attachment_media   = $this->download_pdf_to_media($media);
+
+				if (empty($attachment_media)) {
+					continue;
+				}
+				SyncDebug::log('URI' . var_export($media['guid'], TRUE));
+				SyncDebug::log('Attachment' . var_export($attachment_media, TRUE));
+
+				if ("component_image_group" === $value[2]) {
+					$old_post_id_image_link = 'image_link%22%3A%22'.$id.'%22';
+					$new_post_id_image_link = 'image_link%22%3A%22'.$attachment_media['attachment_id'].'%22';
+				} else {
+					$old_post_id_image_link = 'image_link=\\"'.$id.'\\"';
+					$new_post_id_image_link = 'image_link=\\"'.$attachment_media['attachment_id'].'\\"';
+				}
+				$image_ids[$old_post_id_image_link] = $new_post_id_image_link;
+			}
+		}
+
+		SyncDebug::log(__METHOD__.'():' . __LINE__ .'image_ids' . var_export($image_ids, TRUE));
+		// replace new image_link ids with new
+
+		$post_data['post_content'] = str_replace(
+			array_keys($image_ids),
+			array_values($image_ids),
+			$post_data['post_content']
+		);
+
+		return $post_data['post_content'] ;
+	}
+      ```
+
+This function uses several other functions. so Add all the functions that **sync_custom_module_images** depends on.
+
+**sync_custom_module_images** uses these functions:
+- ``` startsWith ```
+- ``` download_pdf_to_media ```       
