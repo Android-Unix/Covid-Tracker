@@ -78,71 +78,71 @@ In order to make sync for these possible, 2 files needs to be changed:
 
 *Note:- The Model's ``` build_sync_data ``` function is responsible for constructing the necessary data and apicontroller's ``` push ``` function is executed on target system.*
 
-    - #### To Enable MultiLanguage Sync Support in SiteSync plugin
+- #### To Enable MultiLanguage Sync Support in SiteSync plugin
 
-    Find ``` build_sync_data ``` function. 
-    *This function is responsible for preparing data that needs to be sent to remote/target system*
-    
-    Add these lines of code after query object is created.
-    At the time of this documentation **(plugin version 1.6.1)** ,these set of lines:
-    ```
-    $query = new WP_Query($args);
+Find ``` build_sync_data ``` function. 
+*This function is responsible for preparing data that needs to be sent to remote/target system*
 
-    if (0 === $query->found_posts)
-        return $push_data;
+Add these lines of code after query object is created.
+At the time of this documentation **(plugin version 1.6.1)** ,these set of lines:
+```
+$query = new WP_Query($args);
 
-    $push_data['post_data'] = (array) $query->posts[0];
-    $push_data['post_data']['post_content'] = str_replace('\\u', '~syncescuni~', $push_data['post_data']['post_content']);
+if (0 === $query->found_posts)
+    return $push_data;
 
-    if (function_exists('get_attached_media'))
-        $push_data['post_media'] = get_attached_media('', $post_id);
-    ```
-    **Code that needs to be added ( inside build_sync_data ):**
-    ```
-    global $wpdb;
-    $sql = "SELECT * from wp_posts where id = $post_id";
-    $post_data = $wpdb->get_results($sql);
+$push_data['post_data'] = (array) $query->posts[0];
+$push_data['post_data']['post_content'] = str_replace('\\u', '~syncescuni~', $push_data['post_data']['post_content']);
 
-    $push_data['post_data']['post_title']   = $post_data[0]->post_title;
-    $push_data['post_data']['post_excerpt'] = $post_data[0]->post_excerpt;
-    $push_data['post_data']['post_name']    = $post_data[0]->post_name;
-    $push_data['post_data']['post_content'] = $post_data[0]->post_content;
-    ```
+if (function_exists('get_attached_media'))
+    $push_data['post_media'] = get_attached_media('', $post_id);
+```
+**Code that needs to be added ( inside build_sync_data ):**
+```
+global $wpdb;
+$sql = "SELECT * from wp_posts where id = $post_id";
+$post_data = $wpdb->get_results($sql);
 
-    These above set of lines are responsible for multi-lang sync
+$push_data['post_data']['post_title']   = $post_data[0]->post_title;
+$push_data['post_data']['post_excerpt'] = $post_data[0]->post_excerpt;
+$push_data['post_data']['post_name']    = $post_data[0]->post_name;
+$push_data['post_data']['post_content'] = $post_data[0]->post_content;
+```
 
-    - #### To Enable custom posts media transfer and mapping of IDs
-    **Steps**
-    - **1** Since ID's are used in custom posts and the ID's are assigned to ``` image_link ``` We need to extract the id and send only the ids to the target system.
+These above set of lines are responsible for multi-lang sync
 
-    We use regex to extract / parse the shortcode and get the ID that's assigned to **image_link**.
+- #### To Enable custom posts media transfer and mapping of IDs
+**Steps**
+- **1** Since ID's are used in custom posts and the ID's are assigned to ``` image_link ``` We need to extract the id and send only the ids to the target system.
 
-    Add these set of lines of code after the multi-lang code you add inside **build_sync_data**
+We use regex to extract / parse the shortcode and get the ID that's assigned to **image_link**.
 
-    ```
-    // get all image ids from content
-    $image_id_urls = array();
-    $image_field_types_pattern = array(
-        'component_image'              => '/image_link="(.*?)"/',
-        'single_image'                 => '/image="(.*?)"/',
-        'component_image_group'        => '/image_link%22%3A%22(.*?)%22/',
-        'component_mobile_image_group' => '/mobile_image%22%3A%22(.*?)%22/',
+Add these set of lines of code after the multi-lang code you add inside **build_sync_data**
+
+```
+// get all image ids from content
+$image_id_urls = array();
+$image_field_types_pattern = array(
+    'component_image'              => '/image_link="(.*?)"/',
+    'single_image'                 => '/image="(.*?)"/',
+    'component_image_group'        => '/image_link%22%3A%22(.*?)%22/',
+    'component_mobile_image_group' => '/mobile_image%22%3A%22(.*?)%22/',
+);
+
+foreach ($image_field_types_pattern as $image_type=>$regex) :
+    preg_match_all($regex, $post_data[0]->post_content, $ids);
+    $image_id_urls = $this->image_handler(
+            $image_type,
+            $ids[1],
+            $image_id_urls
     );
+endforeach;
 
-    foreach ($image_field_types_pattern as $image_type=>$regex) :
-        preg_match_all($regex, $post_data[0]->post_content, $ids);
-        $image_id_urls = $this->image_handler(
-                $image_type,
-                $ids[1],
-                $image_id_urls
-        );
-    endforeach;
+$push_data['post_data']['image_id_urls'] = $image_id_urls;
+```
 
-    $push_data['post_data']['image_id_urls'] = $image_id_urls;
-    ```
+Here we are assigning the ID's to key ``` image_id_urls ``` that will be later used by the target system to map the ID's
 
-    Here we are assigning the ID's to key ``` image_id_urls ``` that will be later used by the target system to map the ID's
+- **2** Using the sent ID's and constructing the mapping.
 
-    - **2** Using the sent ID's and constructing the mapping.
-
-    #### In order to do this.       
+#### In order to do this.       
