@@ -78,10 +78,37 @@ In order to make sync for these possible, 2 files needs to be changed:
 - Model.php
 
 *Changes that needs to be done in Model.php*
-- Find **build_sync_data** function. 
-    #### This function is responsible for preparing data that needs to be sent to remote/
-    #### target system.
+- Find ``` build_sync_data ``` function. 
+    #### This function is responsible for preparing data that needs to be sent to remote/target system
 
     **First step that needs to be done is enabling the multi language sync**
-    - In order to do this follow these steps:
+    #### STEPS
+    - Add these lines of code after query object is created.
+    At the time of this documentation **(plugin version 1.6.1)** ,these set of lines:
+    ```
+    $query = new WP_Query($args);
+
+    if (0 === $query->found_posts)
+        return $push_data;
+
+    $push_data['post_data'] = (array) $query->posts[0];
+    $push_data['post_data']['post_content'] = str_replace('\\u', '~syncescuni~', $push_data['post_data']['post_content']);
+
+    if (function_exists('get_attached_media'))
+        $push_data['post_media'] = get_attached_media('', $post_id);
+    ```
+    **Code that needs to be added:**
+    ```
+    global $wpdb;
+    $sql = "SELECT * from wp_posts where id = $post_id";
+    $post_data = $wpdb->get_results($sql);
+
+    $push_data['post_data']['post_title']   = $post_data[0]->post_title;
+    $push_data['post_data']['post_excerpt'] = $post_data[0]->post_excerpt;
+    $push_data['post_data']['post_name']    = $post_data[0]->post_name;
+    $push_data['post_data']['post_content'] = $post_data[0]->post_content;
+    ```
+
+    **These above set of lines are responsible for multi-lang sync**
+    
       
